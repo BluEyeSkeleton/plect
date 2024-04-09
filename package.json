@@ -3,13 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/cache": "11.10.8",
+    "@emotion/react": "11.10.8",
+    "@emotion/styled": "11.10.8",
+    "@mui/icons-material": "5.11.16",
+    "@mui/material": "5.12.3",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "chart.js": "4.3.0",
+    "chroma-js": "2.4.2",
+    "prop-types": "15.8.1",
     "react": "^18.2.0",
+    "react-chartjs-2": "5.2.0",
     "react-dom": "^18.2.0",
+    "react-github-btn": "1.4.0",
+    "react-router-dom": "6.11.0",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "react-table": "7.8.0",
+    "stylis": "4.1.4",
+    "stylis-plugin-rtl": "2.1.1",
+    "web-vitals": "^2.1.4",
+    "yup": "1.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,5 +49,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "A web app that sets up Google Calendar reminders for lecturers/teachers to attend their lecture/tutorial/practical class.",
+  "main": "index.js",
+  "keywords": [],
+  "author": "BluEyeSkeleton",
+  "license": "GPL-3.0-only"
 }
