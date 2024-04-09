@@ -1,3 +1,7 @@
+# plect
+
+A web app that sets up Google Calendar reminders for lecturers/teachers to attend their lecture/tutorial/practical class.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
