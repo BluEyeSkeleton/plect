@@ -1,0 +1,16 @@
+TO-DO
+
+auto relogin
+
+auto redirect after auto login
+
+eliminate examples folder
+
+timetable editor layout
+
+auto update calendar (find a way) (1 week earlier)
+
+firebase/firestore to store timetable data
+
+license issues
+

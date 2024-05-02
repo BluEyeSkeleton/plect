@@ -13,13 +13,16 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import React from "react";
+import { React, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "App";
 
 // Material Dashboard 2 React Context Provider
-import { MaterialUIControllerProvider } from "context";
+import { MaterialUIControllerProvider, GlobalContext } from "context";
+
+// Google API OAuth
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const container = document.getElementById("app");
 const root = createRoot(container);
@@ -27,7 +30,9 @@ const root = createRoot(container);
 root.render(
   <BrowserRouter>
     <MaterialUIControllerProvider>
-      <App />
+      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+        <App />
+      </GoogleOAuthProvider>
     </MaterialUIControllerProvider>
   </BrowserRouter>
 );

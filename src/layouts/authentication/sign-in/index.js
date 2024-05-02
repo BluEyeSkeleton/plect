@@ -35,11 +35,15 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 
+// Images
+import brandWhite from "assets/images/logo-plect.png";
+import brandDark from "assets/images/logo-plect-dark.png";
+
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 
 // Images
-import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import bgImage from "assets/images/bg-kmpp-pentadbiran.jpg";
 
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
@@ -61,21 +65,41 @@ function Basic() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Sign in
+            Sign in with your MOE/KM-Pensyarah Account
           </MDTypography>
-          <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
+          <Grid
+            container
+            spacing={3}
+            justifyContent="center"
+            sx={{ mt: 1, mb: 2 }}
+          >
             <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
+              <MDTypography
+                component={MuiLink}
+                href="#"
+                variant="body1"
+                color="white"
+              >
                 <FacebookIcon color="inherit" />
               </MDTypography>
             </Grid>
             <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
+              <MDTypography
+                component={MuiLink}
+                href="#"
+                variant="body1"
+                color="white"
+              >
                 <GitHubIcon color="inherit" />
               </MDTypography>
             </Grid>
             <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
+              <MDTypography
+                component={MuiLink}
+                href="#"
+                variant="body1"
+                color="white"
+              >
                 <GoogleIcon color="inherit" />
               </MDTypography>
             </Grid>

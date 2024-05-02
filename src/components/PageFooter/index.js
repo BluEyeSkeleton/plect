@@ -33,7 +33,7 @@ import MDTypography from "components/MDTypography";
 // Material Dashboard 2 React base styles
 import typography from "assets/theme/base/typography";
 
-function Footer({ light }) {
+function LoginFooter({ light }) {
   const { size } = typography;
 
   return (
@@ -93,7 +93,7 @@ function Footer({ light }) {
               },
             })}
           >
-            <MDBox component="li" pr={2} lineHeight={1}>
+            <MDBox component="li" px={2} lineHeight={1}>
               <Link
                 href="https://github.com/BluEyeSkeleton/plect"
                 target="_blank"
@@ -146,13 +146,13 @@ function Footer({ light }) {
 }
 
 // Setting default props for the Footer
-Footer.defaultProps = {
+LoginFooter.defaultProps = {
   light: false,
 };
 
 // Typechecking props for the Footer
-Footer.propTypes = {
+LoginFooter.propTypes = {
   light: PropTypes.bool,
 };
 
-export default Footer;
+export default LoginFooter;

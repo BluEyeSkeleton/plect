@@ -35,6 +35,10 @@ Coded by www.creative-tim.com
   10. The `component` key is used to store the component of its route.
 */
 
+// Layouts
+import Home from "layouts/home";
+import Login from "layouts/login";
+
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
@@ -49,6 +53,14 @@ import SignUp from "layouts/authentication/sign-up";
 import Icon from "@mui/material/Icon";
 
 const routes = [
+  {
+    type: "collapse",
+    name: "Home",
+    key: "",
+    icon: <Icon fontSize="small">home</Icon>,
+    route: "/",
+    component: <Home />,
+  },
   {
     type: "collapse",
     name: "Dashboard",
@@ -98,20 +110,12 @@ const routes = [
     component: <Profile />,
   },
   {
-    type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
+    type: "hidden",
+    name: "Login",
+    key: "login",
     icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
-  {
-    type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
+    route: "/login",
+    component: <Login />,
   },
 ];
 
