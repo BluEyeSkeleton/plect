@@ -21,6 +21,9 @@ import App from "App";
 // Material Dashboard 2 React Context Provider
 import { MaterialUIControllerProvider, GlobalContext } from "context";
 
+// Cookies
+import { CookiesProvider } from "react-cookie";
+
 // Google API OAuth
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -30,9 +33,11 @@ const root = createRoot(container);
 root.render(
   <BrowserRouter>
     <MaterialUIControllerProvider>
-      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
-        <App />
-      </GoogleOAuthProvider>
+      <CookiesProvider defaultSetOptions={{ path: "/" }}>
+        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+          <App />
+        </GoogleOAuthProvider>
+      </CookiesProvider>
     </MaterialUIControllerProvider>
   </BrowserRouter>
 );

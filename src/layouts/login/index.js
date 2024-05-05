@@ -13,16 +13,12 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
-
-// react-router-dom components
-import { Link } from "react-router-dom";
+import { useContext } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import MuiLink from "@mui/material/Link";
-import Avatar from "@mui/material/Avatar";
+import Avatar from "@mui/material/Avatar"; // Used for showing logo
 
 // @mui icons
 import GoogleIcon from "@mui/icons-material/Google";
@@ -37,21 +33,25 @@ import BasicLayout from "components/BasicLayout";
 
 // Images
 import bgImage from "assets/images/bg-kmpp-pentadbiran.jpg";
-import brandWhite from "assets/images/logo-plect.png";
-import brandDark from "assets/images/logo-plect-dark.png";
+import brand from "assets/images/logo-plect-white.png";
 
 // Google API OAuth
 import { useGoogleLogin } from "@react-oauth/google";
 
+// Global context
+import { GlobalContext } from "context";
+
 function Login() {
-  const [rememberMe, setRememberMe] = useState(false);
+  // Global context
+  const ctx = useContext(GlobalContext);
 
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
-
-  // Custom login button onclick function
+  // When "Sign in with Google button" is clicked
   const onClickLogin = useGoogleLogin({
     scope: process.env.REACT_APP_GOOGLE_OAUTH_SCOPE,
-    onSuccess: (tokenResponse) => console.log(tokenResponse),
+    onSuccess: (res) => {
+      console.log(res); //TO BE REMOVED
+      ctx.setAccessToken(res.access_token);
+    },
   });
 
   return (
@@ -75,11 +75,7 @@ function Login() {
             sx={{ mt: 1, mb: 1 }}
           >
             <Grid item>
-              <Avatar
-                alt="plect"
-                src={brandWhite}
-                sx={{ width: 64, height: 64 }}
-              />
+              <Avatar alt="plect" src={brand} sx={{ width: 64, height: 64 }} />
             </Grid>
           </Grid>
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>

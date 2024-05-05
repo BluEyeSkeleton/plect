@@ -41,16 +41,15 @@ import Login from "layouts/login";
 
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
+import Timetables from "layouts/timetables";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
-import RTL from "layouts/rtl";
 import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
-import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 const routes = [
   {
@@ -60,6 +59,14 @@ const routes = [
     icon: <Icon fontSize="small">home</Icon>,
     route: "/",
     component: <Home />,
+  },
+  {
+    type: "collapse",
+    name: "Timetables",
+    key: "timetables",
+    icon: <CalendarMonthIcon fontSize="small" />,
+    route: "/timetables",
+    component: <Timetables />,
   },
   {
     type: "collapse",
@@ -84,14 +91,6 @@ const routes = [
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/billing",
     component: <Billing />,
-  },
-  {
-    type: "collapse",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-    route: "/rtl",
-    component: <RTL />,
   },
   {
     type: "collapse",

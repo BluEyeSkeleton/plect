@@ -129,7 +129,7 @@ const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
 
 // Global variables
-const GlobalContext = createContext("");
+const GlobalContext = createContext();
 
 export {
   MaterialUIControllerProvider,

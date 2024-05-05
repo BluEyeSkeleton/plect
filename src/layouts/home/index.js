@@ -13,209 +13,275 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-// react-router components
-import { Navigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
-import Divider from "@mui/material/Divider";
+import Card from "@mui/material/Card";
+import AppBar from "@mui/material/AppBar";
+import Tabs from "@mui/material/Tabs";
 
 // @mui icons
-import FacebookIcon from "@mui/icons-material/Facebook";
-import TwitterIcon from "@mui/icons-material/Twitter";
-import InstagramIcon from "@mui/icons-material/Instagram";
+import LogoutIcon from "@mui/icons-material/Logout";
+import UpdateIcon from "@mui/icons-material/Update";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import MDAvatar from "components/MDAvatar";
+import DashboardLayout from "components/DashboardLayout";
+import Footer from "components/Footer";
 
-// Material Dashboard 2 React example components
-import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import Navbar from "components/Navbar";
-import Footer from "examples/Footer";
-import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
-import ProfilesList from "examples/Lists/ProfilesList";
-import DefaultProjectCard from "examples/Cards/ProjectCards/DefaultProjectCard";
-
-// Home page components
-import Header from "layouts/home/components/Header";
-import PlatformSettings from "layouts/home/components/PlatformSettings";
-
-// Data
-import profilesListData from "layouts/home/data/profilesListData";
+// Material Dashboard 2 React base styles
+import breakpoints from "assets/theme/base/breakpoints";
 
 // Images
-import homeDecor1 from "assets/images/home-decor-1.jpg";
-import homeDecor2 from "assets/images/home-decor-2.jpg";
-import homeDecor3 from "assets/images/home-decor-3.jpg";
-import homeDecor4 from "assets/images/home-decor-4.jpeg";
-import team1 from "assets/images/team-1.jpg";
-import team2 from "assets/images/team-2.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
+import bgImage from "assets/images/bg-kmpp-pentadbiran.jpg";
 
-// Google API OAuth
-import { useGoogleOneTapLogin } from "@react-oauth/google";
+// Custom classes
+import { userinfo } from "utils/GoogleAPI";
+
+// Global context
+import { GlobalContext } from "context";
+import MDButton from "components/MDButton";
 
 function Home() {
-  let redirectLogin = false;
-  useGoogleOneTapLogin({
-    onSuccess: (credentialResponse) => {
-      console.log(credentialResponse);
-    },
-    onError: () => {
-      redirectLogin = true;
-    },
-    auto_select: true,
-  });
-  if (redirectLogin) return <Navigate to="/login" replace />;
+  // Global context
+  const ctx = useContext(GlobalContext);
+
+  // State values
+  const [userInfo, setUserInfo] = useState({});
+  const [isLoading, setLoading] = useState(true);
+
+  const [tabsOrientation, setTabsOrientation] = useState("horizontal");
+  const [tabValue, setTabValue] = useState(0);
+
+  // Header things
+  useEffect(() => {
+    // A function that sets the orientation state of the tabs.
+    function handleTabsOrientation() {
+      return window.innerWidth < breakpoints.values.sm
+        ? setTabsOrientation("vertical")
+        : setTabsOrientation("horizontal");
+    }
+
+    /** 
+     The event listener that's calling the handleTabsOrientation function when resizing the window.
+    */
+    window.addEventListener("resize", handleTabsOrientation);
+
+    // Call the handleTabsOrientation function to set the state with the initial value.
+    handleTabsOrientation();
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleTabsOrientation);
+  }, [tabsOrientation]);
+
+  const handleSetTabValue = (event, newValue) => setTabValue(newValue);
+
+  // Get user info from Google
+  useEffect(() => {
+    userinfo(ctx.accessToken).then((res) => {
+      setUserInfo(res);
+      console.log(res);
+      setLoading(false);
+    });
+  }, []);
+
+  if (isLoading) return null;
+
   return (
     <DashboardLayout>
-      <Navbar />
       <MDBox mb={2} />
-      <Header>
-        <MDBox mt={5} mb={3}>
-          <Grid container spacing={1}>
-            <Grid item xs={12} md={6} xl={4}>
-              <PlatformSettings />
-            </Grid>
-            <Grid item xs={12} md={6} xl={4} sx={{ display: "flex" }}>
-              <Divider orientation="vertical" sx={{ ml: -2, mr: 1 }} />
-              <ProfileInfoCard
-                title="profile information"
-                description="Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
-                info={{
-                  fullName: "Alec M. Thompson",
-                  mobile: "(44) 123 1234 123",
-                  email: "alecthompson@mail.com",
-                  location: "USA",
-                }}
-                social={[
-                  {
-                    link: "https://www.facebook.com/CreativeTim/",
-                    icon: <FacebookIcon />,
-                    color: "facebook",
-                  },
-                  {
-                    link: "https://twitter.com/creativetim",
-                    icon: <TwitterIcon />,
-                    color: "twitter",
-                  },
-                  {
-                    link: "https://www.instagram.com/creativetimofficial/",
-                    icon: <InstagramIcon />,
-                    color: "instagram",
-                  },
-                ]}
-                action={{ route: "", tooltip: "Edit Profile" }}
-                shadow={false}
-              />
-              <Divider orientation="vertical" sx={{ mx: 0 }} />
-            </Grid>
-            <Grid item xs={12} xl={4}>
-              <ProfilesList
-                title="conversations"
-                profiles={profilesListData}
-                shadow={false}
-              />
-            </Grid>
-          </Grid>
-        </MDBox>
-        <MDBox pt={2} px={2} lineHeight={1.25}>
-          <MDTypography variant="h6" fontWeight="medium">
-            Projects
+      <MDBox position="relative" mb={5}>
+        <MDBox
+          display="flex"
+          alignItems="center"
+          position="relative"
+          minHeight="18.75rem"
+          borderRadius="xl"
+          justifyContent="center"
+          sx={{
+            backgroundImage: ({
+              functions: { rgba, linearGradient },
+              palette: { gradients },
+            }) =>
+              `${linearGradient(
+                rgba(gradients.info.main, 0.6),
+                rgba(gradients.info.state, 0.6)
+              )}, url(${bgImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "50%",
+            overflow: "hidden",
+          }}
+        >
+          <MDTypography variant="h1" fontWeight="medium" color="white" mt={1}>
+            Selamat datang! Jom "plect" (pergi lecture)
           </MDTypography>
-          <MDBox mb={1}>
-            <MDTypography variant="button" color="text">
-              Architects design houses
-            </MDTypography>
-          </MDBox>
         </MDBox>
-        <MDBox p={2}>
-          <Grid container spacing={6}>
-            <Grid item xs={12} md={6} xl={3}>
-              <DefaultProjectCard
-                image={homeDecor1}
-                label="project #2"
-                title="modern"
-                description="As Uber works through a huge amount of internal management turmoil."
-                action={{
-                  type: "internal",
-                  route: "/pages/profile/profile-overview",
-                  color: "info",
-                  label: "view project",
-                }}
-                authors={[
-                  { image: team1, name: "Elena Morison" },
-                  { image: team2, name: "Ryan Milly" },
-                  { image: team3, name: "Nick Daniel" },
-                  { image: team4, name: "Peterson" },
-                ]}
+        <Card
+          sx={{
+            position: "relative",
+            mt: -8,
+            mx: 3,
+            py: 2,
+            px: 2,
+          }}
+        >
+          <Grid container spacing={3} alignItems="center">
+            <Grid item>
+              <MDAvatar
+                src={userInfo.picture}
+                alt="profile-image"
+                size="xl"
+                shadow="sm"
               />
             </Grid>
-            <Grid item xs={12} md={6} xl={3}>
-              <DefaultProjectCard
-                image={homeDecor2}
-                label="project #1"
-                title="scandinavian"
-                description="Music is something that everyone has their own specific opinion about."
-                action={{
-                  type: "internal",
-                  route: "/pages/profile/profile-overview",
-                  color: "info",
-                  label: "view project",
-                }}
-                authors={[
-                  { image: team3, name: "Nick Daniel" },
-                  { image: team4, name: "Peterson" },
-                  { image: team1, name: "Elena Morison" },
-                  { image: team2, name: "Ryan Milly" },
-                ]}
-              />
+            <Grid item>
+              <MDBox height="100%" mt={0.5} lineHeight={1}>
+                <MDTypography variant="h5" fontWeight="medium">
+                  {userInfo.name}
+                </MDTypography>
+                <MDTypography
+                  variant="button"
+                  color="text"
+                  fontWeight="regular"
+                >
+                  {userInfo.email}
+                </MDTypography>
+              </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} xl={3}>
-              <DefaultProjectCard
-                image={homeDecor3}
-                label="project #3"
-                title="minimalist"
-                description="Different people have different taste, and various types of music."
-                action={{
-                  type: "internal",
-                  route: "/pages/profile/profile-overview",
-                  color: "info",
-                  label: "view project",
-                }}
-                authors={[
-                  { image: team4, name: "Peterson" },
-                  { image: team3, name: "Nick Daniel" },
-                  { image: team2, name: "Ryan Milly" },
-                  { image: team1, name: "Elena Morison" },
-                ]}
-              />
-            </Grid>
-            <Grid item xs={12} md={6} xl={3}>
-              <DefaultProjectCard
-                image={homeDecor4}
-                label="project #4"
-                title="gothic"
-                description="Why would anyone pick blue over pink? Pink is obviously a better color."
-                action={{
-                  type: "internal",
-                  route: "/pages/profile/profile-overview",
-                  color: "info",
-                  label: "view project",
-                }}
-                authors={[
-                  { image: team4, name: "Peterson" },
-                  { image: team3, name: "Nick Daniel" },
-                  { image: team2, name: "Ryan Milly" },
-                  { image: team1, name: "Elena Morison" },
-                ]}
-              />
+            <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
+              <AppBar position="static">
+                <Tabs
+                  orientation={tabsOrientation}
+                  value={tabValue}
+                  onChange={handleSetTabValue}
+                >
+                  <MDButton
+                    variant="outlined"
+                    color="success"
+                    size="small"
+                    px={1}
+                  >
+                    <UpdateIcon fontSize="small" sx={{ mt: -0.25 }} />
+                    &nbsp; update timetable
+                  </MDButton>
+                  <Link to="/logout">
+                    <MDButton
+                      variant="outlined"
+                      color="info"
+                      size="small"
+                      px={1}
+                    >
+                      <LogoutIcon fontSize="small" sx={{ mt: -0.25 }} />
+                      &nbsp; sign out
+                    </MDButton>
+                  </Link>
+                </Tabs>
+              </AppBar>
             </Grid>
           </Grid>
-        </MDBox>
-      </Header>
+          <MDBox mt={5} mb={3}>
+            <MDBox display="flex" justifyContent="center">
+              <MDTypography variant="h2" fontWeight="medium" mt={1}>
+                How to use?
+              </MDTypography>
+            </MDBox>
+            <Grid container spacing={1}>
+              <Grid item xs={12} md={6} xl={4}>
+                <MDBox p={2}>
+                  <MDTypography variant="h6" fontWeight="medium">
+                    1. Create your timetable
+                  </MDTypography>
+                </MDBox>
+                <Card sx={{ boxShadow: "none" }}>
+                  <MDBox p={2}>
+                    <MDBox mb={2} lineHeight={1}>
+                      <MDTypography
+                        variant="button"
+                        color="text"
+                        fontWeight="light"
+                      >
+                        Enter your weekly timetable details. Worry not about
+                        possible timetable amendments in the future as you can
+                        make changes to the timetable saved here.
+                      </MDTypography>
+                    </MDBox>
+                  </MDBox>
+                </Card>
+              </Grid>
+              <Grid item xs={12} md={6} xl={4}>
+                <MDBox p={2}>
+                  <MDTypography variant="h6" fontWeight="medium">
+                    2. Update your Google Calendar
+                  </MDTypography>
+                </MDBox>
+                <Card sx={{ boxShadow: "none" }}>
+                  <MDBox p={2}>
+                    <MDBox mb={2} lineHeight={1}>
+                      <MDTypography
+                        variant="button"
+                        color="text"
+                        fontWeight="light"
+                      >
+                        Now you have your weekly timetable saved, plect will
+                        make updates to your Google Calendar according to your
+                        preference. You may choose to update it manually by
+                        signing in to plect and click &nbsp;
+                        <MDTypography
+                          variant="caption"
+                          fontWeight="bold"
+                          color="success"
+                          textTransform="uppercase"
+                        >
+                          <UpdateIcon fontSize="small" sx={{ m: -0.5 }} />
+                          &nbsp; update timetable
+                        </MDTypography>
+                        , or let plect handle it automatically on a weekly
+                        basis.
+                      </MDTypography>
+                    </MDBox>
+                  </MDBox>
+                </Card>
+              </Grid>
+              <Grid item xs={12} xl={4}>
+                <MDBox p={2}>
+                  <MDTypography variant="h6" fontWeight="medium">
+                    3. Google Calendar will get the job done!
+                  </MDTypography>
+                </MDBox>
+                <Card sx={{ boxShadow: "none" }}>
+                  <MDBox p={2}>
+                    <MDBox mb={2} lineHeight={1}>
+                      <MDTypography
+                        variant="button"
+                        color="text"
+                        fontWeight="light"
+                      >
+                        Google Calendar will remind you of your upcoming
+                        lectures. Be sure to enable notifications on your phone
+                        so that you don't miss any reminders!
+                      </MDTypography>
+                    </MDBox>
+                  </MDBox>
+                </Card>
+              </Grid>
+            </Grid>
+          </MDBox>
+          <MDBox pt={2} px={2} lineHeight={1.25} textAlign="center">
+            <Link to="/timetables">
+              <MDButton variant="gradient" color="success" size="large" px={1}>
+                <CalendarMonthIcon fontSize="large" sx={{ mt: -0.25 }} />
+                &nbsp; go to timetables
+              </MDButton>
+            </Link>
+          </MDBox>
+        </Card>
+      </MDBox>
+
       <Footer />
     </DashboardLayout>
   );

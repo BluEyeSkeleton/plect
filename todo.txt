@@ -1,14 +1,12 @@
 TO-DO
 
-auto relogin
-
-auto redirect after auto login
+auto relogin (ignored coz cookies failed)
 
 eliminate examples folder
 
 timetable editor layout
 
-auto update calendar (find a way) (1 week earlier)
+auto update calendar (find a way) (1 week earlier) (use uptimerobot)
 
 firebase/firestore to store timetable data
 

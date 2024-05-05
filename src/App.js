@@ -13,10 +13,16 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 
 // react-router components
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -25,23 +31,17 @@ import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import MDSnackbar from "components/MDSnackbar";
 
 // Material Dashboard 2 React example components
-import Sidenav from "examples/Sidenav";
+import Sidenav from "components/Sidenav";
 import Configurator from "examples/Configurator";
 
 // Material Dashboard 2 React themes
 import theme from "assets/theme";
-import themeRTL from "assets/theme/theme-rtl";
 
 // Material Dashboard 2 React Dark Mode themes
 import themeDark from "assets/theme-dark";
-import themeDarkRTL from "assets/theme-dark/theme-rtl";
-
-// RTL plugins
-import rtlPlugin from "stylis-plugin-rtl";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
 
 // Material Dashboard 2 React routes
 import routes from "routes";
@@ -54,11 +54,20 @@ import {
   GlobalContext,
 } from "context";
 
+// Cookies
+import { useCookies } from "react-cookie";
+
+// Custom classes
+import { validateToken } from "utils/GoogleAPI";
+
 // Images
-import brandWhite from "assets/images/logo-plect.png";
-import brandDark from "assets/images/logo-plect-dark.png";
+import brandWhite from "assets/images/logo-plect-white.png";
+import brandDark from "assets/images/logo-plect-black.png";
 
 export default function App() {
+  // Cookies
+  const [cookies, setCookie] = useCookies(["access_token"]);
+
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
@@ -71,18 +80,37 @@ export default function App() {
     darkMode,
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
-  const [rtlCache, setRtlCache] = useState(null);
+
+  // Custom states (global variables) for authentication purposes
+  const [accessToken, setAccessToken] = useState(cookies.access_token);
+  const [auth, setAuth] = useState(false);
+
+  // State values for snackbars
+  const [reloadWarning, setReloadWarning] = useState(false);
+  const openReloadWarning = () => setReloadWarning(true);
+  const closeReloadWarning = () => setReloadWarning(false);
+
+  // Get pathname and navigateTo() method
   const { pathname } = useLocation();
+  const navigateTo = useNavigate();
 
-  // Cache for the rtl
-  useMemo(() => {
-    const cacheRtl = createCache({
-      key: "rtl",
-      stylisPlugins: [rtlPlugin],
-    });
-
-    setRtlCache(cacheRtl);
-  }, []);
+  // Render reload warning snackbar
+  const renderReloadWarning = (
+    <MDSnackbar
+      color="warning"
+      icon="star"
+      title="Warning"
+      content={
+        "Reloading will cause the web app to lose access " +
+        "to your Google account, and you will have to sign in again!"
+      }
+      dateTime="nope"
+      open={reloadWarning}
+      onClose={closeReloadWarning}
+      close={closeReloadWarning}
+      bgWhite
+    />
+  );
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -104,6 +132,20 @@ export default function App() {
   const handleConfiguratorOpen = () =>
     setOpenConfigurator(dispatch, !openConfigurator);
 
+  // Handle user reloads
+  useEffect(() => {
+    const onBeforeUnload = (event) => {
+      openReloadWarning();
+      event.returnValue = "Are you sure you want to reload?";
+      return "Are you sure you want to reload?";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", onBeforeUnload);
+    };
+  }, []);
+
   // Setting the dir attribute for the body element
   useEffect(() => {
     document.body.setAttribute("dir", direction);
@@ -114,6 +156,25 @@ export default function App() {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
+
+  // Called after change in auth state
+  useEffect(() => {
+    navigateTo("/", { replace: true });
+  }, [auth]);
+
+  // Called when access token is updated
+  useEffect(() => {
+    setCookie("access_token", accessToken, {
+      maxAge: 3599, // Expires after 1 hour
+      httpOnly: true,
+      secure: false, // Set to true if using HTTPS
+    });
+    async function load() {
+      const isValid = await validateToken(accessToken);
+      setAuth(isValid);
+    }
+    load();
+  }, [accessToken]);
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
@@ -161,30 +222,38 @@ export default function App() {
 
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
-      <CssBaseline />
-      {layout === "plect" && (
-        <>
-          <Sidenav
-            color={sidenavColor}
-            brand={
-              (transparentSidenav && !darkMode) || whiteSidenav
-                ? brandDark
-                : brandWhite
-            }
-            brandName="plect"
-            routes={routes}
-            onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
-          />
-          <Configurator />
-          {configsButton};
-        </>
-      )}
-      {layout === "vr" && <Configurator />}
-      <Routes>
-        {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+      <GlobalContext.Provider value={{ auth, accessToken, setAccessToken }}>
+        <CssBaseline />
+        {layout === "plect" && (
+          <>
+            <Sidenav
+              color={sidenavColor}
+              brand={
+                (transparentSidenav && !darkMode) || whiteSidenav
+                  ? brandDark
+                  : brandWhite
+              }
+              brandName="plect"
+              routes={routes}
+              onMouseEnter={handleOnMouseEnter}
+              onMouseLeave={handleOnMouseLeave}
+            />
+            <Configurator />
+            {configsButton}
+          </>
+        )}
+        {layout === "vr" && <Configurator />}
+        {renderReloadWarning}
+        {!auth && pathname !== "/login" ? (
+          // If access token invalid
+          <Navigate to="/login" />
+        ) : (
+          <Routes>
+            {getRoutes(routes)}
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        )}
+      </GlobalContext.Provider>
     </ThemeProvider>
   );
 }
