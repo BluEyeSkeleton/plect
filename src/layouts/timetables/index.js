@@ -22,10 +22,9 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
-import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import DashboardLayout from "components/DashboardLayout";
 import Footer from "examples/Footer";
-import DataTable from "examples/Tables/DataTable";
+import DataTable from "components/DataTable";
 
 // Data
 import authorsTableData from "layouts/tables/data/authorsTableData";
@@ -37,7 +36,6 @@ function Timetables() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar />
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
@@ -53,7 +51,7 @@ function Timetables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Authors Table
+                  Configuration
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
@@ -80,7 +78,7 @@ function Timetables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Projects Table
+                  Default Timetable
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>

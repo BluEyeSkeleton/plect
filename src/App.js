@@ -167,7 +167,7 @@ export default function App() {
     setCookie("access_token", accessToken, {
       maxAge: 3599, // Expires after 1 hour
       httpOnly: true,
-      secure: false, // Set to true if using HTTPS
+      secure: true, // Set to true if using HTTPS
     });
     async function load() {
       const isValid = await validateToken(accessToken);

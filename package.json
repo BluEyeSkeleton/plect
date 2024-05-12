@@ -16,6 +16,7 @@
     "axios": "^1.6.8",
     "chart.js": "4.3.0",
     "chroma-js": "2.4.2",
+    "firebase": "^10.11.1",
     "prop-types": "15.8.1",
     "react": "^18.2.0",
     "react-chartjs-2": "5.2.0",
@@ -32,7 +33,7 @@
     "yup": "1.1.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set HTTPS=true&&set SSL_CRT_FILE=localhost.pem&&set SSL_KEY_FILE=localhost-key.pem&&react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

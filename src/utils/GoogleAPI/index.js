@@ -16,6 +16,30 @@ Coded by www.creative-tim.com
 import axios from "axios";
 import $n from "utils/$n";
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import {
+  getFirestore,
+  addDoc,
+  getDocs,
+  collection,
+  query,
+  where,
+} from "@firebase/firestore";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+import firebaseConfig from "configs/firebase";
+
+// Timetable builder
+import { createTimetable } from "utils/TimetableBuilder";
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const timetables = collection(db, "timetables");
+
 export const validateToken = (accessToken) => {
   return new Promise((resolve, _) => {
     if ($n(accessToken)) resolve(false);
@@ -47,4 +71,20 @@ export const userinfo = (accessToken) => {
         resolve(false);
       });
   });
+};
+
+export const isNewUser = (email) => {
+  return new Promise((resolve, _) => {
+    const q = query(timetables, where("email", "==", email));
+    getDocs(q).then((snapshot) => {
+      snapshot.forEach((doc) => {
+        resolve(false);
+      });
+      resolve(true);
+    });
+  });
+};
+
+export const createUserTimetable = (email) => {
+  return addDoc(timetables, { email: email, data: createTimetable() });
 };
