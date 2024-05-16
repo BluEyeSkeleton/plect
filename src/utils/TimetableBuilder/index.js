@@ -13,8 +13,6 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import defaultTimetable from "configs/defaultTimetable";
-
 export const Days = Object.freeze({
   SUNDAY: 0,
   MONDAY: 1,
@@ -31,11 +29,19 @@ export const ItemType = Object.freeze({
   PRACTICAL: 2, // Amali
 });
 
-export const createTimetable = (interval = 60, startTime = 480) => {
+export const initTimetable = (userInfo, interval = 60, startTime = 480) => {
   return {
+    email: userInfo.email,
+    name: userInfo.name,
     interval: interval,
     startTime: startTime,
-    items: [[], [], [], [], [], [], []],
+    d0: [],
+    d1: [],
+    d2: [],
+    d3: [],
+    d4: [],
+    d5: [],
+    d6: [],
   };
 };
 
@@ -52,11 +58,11 @@ export const modifyItem = (timetable, day, i, item) => {
 };
 
 export const createItem = (code, name, type, venue, practicum) => {
-  return {
+  return JSON.stringify({
     code: code,
     name: name,
     type: type,
     venue: venue,
     practicum: practicum,
-  };
+  });
 };

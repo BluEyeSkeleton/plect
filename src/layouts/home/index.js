@@ -33,6 +33,7 @@ import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import DashboardLayout from "components/DashboardLayout";
 import Footer from "components/Footer";
+import MDButton from "components/MDButton";
 
 // Material Dashboard 2 React base styles
 import breakpoints from "assets/theme/base/breakpoints";
@@ -40,20 +41,12 @@ import breakpoints from "assets/theme/base/breakpoints";
 // Images
 import bgImage from "assets/images/bg-kmpp-pentadbiran.jpg";
 
-// Custom classes
-import { userinfo } from "utils/GoogleAPI";
-
 // Global context
 import { GlobalContext } from "context";
-import MDButton from "components/MDButton";
 
 function Home() {
   // Global context
   const ctx = useContext(GlobalContext);
-
-  // State values
-  const [userInfo, setUserInfo] = useState({});
-  const [isLoading, setLoading] = useState(true);
 
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
@@ -80,17 +73,6 @@ function Home() {
   }, [tabsOrientation]);
 
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
-
-  // Get user info from Google
-  useEffect(() => {
-    userinfo(ctx.accessToken).then((res) => {
-      setUserInfo(res);
-      console.log(res);
-      setLoading(false);
-    });
-  }, []);
-
-  if (isLoading) return null;
 
   return (
     <DashboardLayout>
@@ -133,7 +115,7 @@ function Home() {
           <Grid container spacing={3} alignItems="center">
             <Grid item>
               <MDAvatar
-                src={userInfo.picture}
+                src={ctx.userInfo.picture}
                 alt="profile-image"
                 size="xl"
                 shadow="sm"
@@ -142,14 +124,14 @@ function Home() {
             <Grid item>
               <MDBox height="100%" mt={0.5} lineHeight={1}>
                 <MDTypography variant="h5" fontWeight="medium">
-                  {userInfo.name}
+                  {ctx.userInfo.name}
                 </MDTypography>
                 <MDTypography
                   variant="button"
                   color="text"
                   fontWeight="regular"
                 >
-                  {userInfo.email}
+                  {ctx.userInfo.email}
                 </MDTypography>
               </MDBox>
             </Grid>

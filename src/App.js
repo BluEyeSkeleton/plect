@@ -58,7 +58,12 @@ import {
 import { useCookies } from "react-cookie";
 
 // Custom classes
-import { validateToken } from "utils/GoogleAPI";
+import {
+  validateToken,
+  userinfo,
+  isNewUser,
+  createUserTimetable,
+} from "utils/GoogleAPI";
 
 // Images
 import brandWhite from "assets/images/logo-plect-white.png";
@@ -84,6 +89,7 @@ export default function App() {
   // Custom states (global variables) for authentication purposes
   const [accessToken, setAccessToken] = useState(cookies.access_token);
   const [auth, setAuth] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
 
   // State values for snackbars
   const [reloadWarning, setReloadWarning] = useState(false);
@@ -132,8 +138,8 @@ export default function App() {
   const handleConfiguratorOpen = () =>
     setOpenConfigurator(dispatch, !openConfigurator);
 
-  // Handle user reloads
   useEffect(() => {
+    // Handle user reloads
     const onBeforeUnload = (event) => {
       openReloadWarning();
       event.returnValue = "Are you sure you want to reload?";
@@ -157,12 +163,7 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  // Called after change in auth state
-  useEffect(() => {
-    navigateTo("/", { replace: true });
-  }, [auth]);
-
-  // Called when access token is updated
+  // Called when access token is updated (only once login)
   useEffect(() => {
     setCookie("access_token", accessToken, {
       maxAge: 3599, // Expires after 1 hour
@@ -172,6 +173,17 @@ export default function App() {
     async function load() {
       const isValid = await validateToken(accessToken);
       setAuth(isValid);
+
+      if (!isValid) return;
+
+      // Fetch user info
+      const info = await userinfo(accessToken);
+      setUserInfo(info);
+
+      // Create new timetable if new user
+      if (await isNewUser(info.email)) await createUserTimetable(info);
+
+      navigateTo("/", { replace: true });
     }
     load();
   }, [accessToken]);
@@ -222,7 +234,9 @@ export default function App() {
 
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
-      <GlobalContext.Provider value={{ auth, accessToken, setAccessToken }}>
+      <GlobalContext.Provider
+        value={{ auth, accessToken, setAccessToken, userInfo }}
+      >
         <CssBaseline />
         {layout === "plect" && (
           <>
