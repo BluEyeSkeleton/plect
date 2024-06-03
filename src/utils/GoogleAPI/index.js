@@ -17,7 +17,14 @@ import axios from "axios";
 import $n from "utils/$n";
 
 // Import the functions you need from the SDKs you need
-import { addDoc, getDocs, collection, query, where } from "firebase/firestore";
+import {
+  addDoc,
+  getDocs,
+  collection,
+  query,
+  where,
+  updateDoc,
+} from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -75,14 +82,26 @@ export const createUserTimetable = (userInfo) => {
   return addDoc(timetables, initTimetable(userInfo));
 };
 
-export const getUserTimetable = (email) => {
+export const getUserDoc = (email) => {
   return new Promise((resolve, _) => {
     const q = query(timetables, where("email", "==", email));
     getDocs(q).then((snapshot) => {
       if (snapshot.empty) resolve(false);
       snapshot.forEach((doc) => {
-        resolve(doc.data());
+        resolve(doc);
       });
     });
   });
+};
+
+export const getUserTimetable = (email) => {
+  return new Promise((resolve, _) => {
+    getUserDoc(email).then((doc) => {
+      resolve(!doc ? false : doc.data());
+    });
+  });
+};
+
+export const deleteAllSubjects = (doc) => {
+  return updateDoc(doc, { subjects: "[]" });
 };

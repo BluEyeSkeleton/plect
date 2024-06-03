@@ -8,7 +8,5 @@ timetable editor layout
 
 auto update calendar (find a way) (1 week earlier) (use uptimerobot)
 
-firebase/firestore to store timetable data
-
 license issues
 
